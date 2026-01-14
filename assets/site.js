@@ -1,4 +1,4 @@
-const appUrl = "/app/index.html"; // Update when you host the desktop app
+const appUrl = "/app/index.html"; // Hosted desktop web build
 const backendBaseUrl = "https://cds-estimate-foto-pump.trycloudflare.com";
 
 const tokenKey = "foolder_token";
