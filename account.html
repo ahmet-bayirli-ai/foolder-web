@@ -139,6 +139,24 @@
       font-size: 14px;
       color: #ffb74d;
     }
+    .tv-code-box {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .tv-code-box input {
+      flex: 1;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+    .tv-code-box button {
+      width: 140px;
+      background: #ff9800;
+    }
+    .tv-code-box button:hover {
+      background: #ffa726;
+    }
     .hidden {
       display: none;
     }
@@ -150,6 +168,11 @@
     
     <div id="qrNotice" class="qr-notice hidden">
       Signing in from your TV app
+    </div>
+
+    <div id="tvCodeWrap" class="tv-code-box">
+      <input id="tvCodeInput" type="text" placeholder="TV code" maxlength="6" />
+      <button id="tvCodeBtn" class="btn" type="button">Continue</button>
     </div>
     
     <div id="loginForm">

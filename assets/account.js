@@ -13,6 +13,9 @@ const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 const qrNotice = document.getElementById("qrNotice");
 const statusEl = document.getElementById("status");
+const tvCodeWrap = document.getElementById("tvCodeWrap");
+const tvCodeInput = document.getElementById("tvCodeInput");
+const tvCodeBtn = document.getElementById("tvCodeBtn");
 
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -27,13 +30,56 @@ const toggleLogin = document.getElementById("toggleLogin");
 
 // Check for QR session parameter
 const urlParams = new URLSearchParams(window.location.search);
-const qrSessionId = urlParams.get("qr");
+let qrSessionId = urlParams.get("qr");
+const tvCodeParam = urlParams.get("code");
 
 let isQrMode = false;
+
+async function resolveTvCode(code) {
+  const trimmed = String(code || "").trim();
+  if (!trimmed) return false;
+  const data = await api(`/auth/qr-code/${encodeURIComponent(trimmed)}`);
+  qrSessionId = data.sessionId || null;
+  if (qrSessionId) {
+    isQrMode = true;
+    qrNotice.classList.remove("hidden");
+    if (tvCodeWrap) tvCodeWrap.classList.add("hidden");
+    return true;
+  }
+  return false;
+}
 
 if (qrSessionId) {
   isQrMode = true;
   qrNotice.classList.remove("hidden");
+  if (tvCodeWrap) tvCodeWrap.classList.add("hidden");
+}
+
+if (!qrSessionId && tvCodeParam) {
+  resolveTvCode(tvCodeParam).catch((e) => {
+    showStatus(e.message || "Invalid TV code", "error");
+  });
+}
+
+if (tvCodeBtn) {
+  tvCodeBtn.addEventListener("click", async () => {
+    try {
+      const code = tvCodeInput.value.trim();
+      if (!code) {
+        showStatus("Enter the TV code shown on your device", "error");
+        return;
+      }
+      tvCodeBtn.disabled = true;
+      tvCodeBtn.textContent = "Linking...";
+      await resolveTvCode(code);
+      showStatus("Linked. Continue signing in below.", "success");
+    } catch (e) {
+      showStatus(e.message || "Invalid TV code", "error");
+    } finally {
+      tvCodeBtn.disabled = false;
+      tvCodeBtn.textContent = "Continue";
+    }
+  });
 }
 
 // Toggle between login and signup
