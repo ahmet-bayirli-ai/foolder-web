@@ -9,7 +9,7 @@
     || localStorage.getItem("foolder_backend_url")
     || ((window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
       ? "http://localhost:3000"
-      : "https://api.foolder.tv"));
+      : "https://api.foolder.com"));
 
   // Helper function to escape HTML and prevent XSS
   function escapeHtml(text) {
@@ -51,7 +51,15 @@
     }
     
     const text = await res.text();
-    const data = text ? JSON.parse(text) : {};
+    let data = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      const hint = text && text.trim().startsWith("<")
+        ? "Server returned HTML. Please check backend URL configuration."
+        : "Invalid JSON response from server.";
+      throw new Error(hint);
+    }
     if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
     return data;
   }

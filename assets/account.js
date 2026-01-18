@@ -1,7 +1,7 @@
 // Account Settings Page
 const defaultBackendUrl = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
   ? "http://localhost:3000"
-  : "https://api.foolder.tv";
+  : "https://api.foolder.com";
 const backendBaseUrl = window.FOOLDER_BACKEND_URL
   || localStorage.getItem("foolder_backend_url")
   || defaultBackendUrl;
@@ -22,7 +22,15 @@ async function api(path, options = {}) {
   if (token) headers.Authorization = `Bearer ${token}`;
   const res = await fetch(`${backendBaseUrl}${path}`, { ...options, headers });
   const text = await res.text();
-  const data = text ? JSON.parse(text) : {};
+  let data = {};
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    const hint = text && text.trim().startsWith("<")
+      ? "Server returned HTML. Please check backend URL configuration."
+      : "Invalid JSON response from server.";
+    throw new Error(hint);
+  }
   if (!res.ok) {
     if (res.status === 401) {
       localStorage.removeItem(tokenKey);

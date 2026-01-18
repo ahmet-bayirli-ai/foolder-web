@@ -1,7 +1,7 @@
 const appUrl = "/app/index.html"; // Hosted desktop web build
 const defaultBackendUrl = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
   ? "http://localhost:3000"
-  : "https://api.foolder.tv";
+  : "https://api.foolder.com";
 const backendBaseUrl = window.FOOLDER_BACKEND_URL
   || localStorage.getItem("foolder_backend_url")
   || defaultBackendUrl;
@@ -22,7 +22,15 @@ async function api(path, options = {}) {
   if (token) headers.Authorization = `Bearer ${token}`;
   const res = await fetch(`${backendBaseUrl}${path}`, { ...options, headers });
   const text = await res.text();
-  const data = text ? JSON.parse(text) : {};
+  let data = {};
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    const hint = text && text.trim().startsWith("<")
+      ? "Server returned HTML. Please check backend URL configuration."
+      : "Invalid JSON response from server.";
+    throw new Error(hint);
+  }
   if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
   return data;
 }
@@ -30,7 +38,7 @@ async function api(path, options = {}) {
 // Check authentication and update nav
 async function updateNavigation() {
   const token = localStorage.getItem(tokenKey);
-  const accountLinks = document.querySelectorAll('.nav a[href="account.html"]');
+  const accountLinks = document.querySelectorAll('.nav a[href="account.html"], .nav a[href="login.html"]');
   
   if (!token) {
     // Not logged in - change Account link to Login
@@ -57,23 +65,6 @@ async function updateNavigation() {
       });
     }
   }
-}
-
-// Update navigation links based on login state
-function updateNavigation(loggedIn) {
-  const navLinks = document.querySelectorAll('.nav a');
-  navLinks.forEach(link => {
-    // Find the login/account link
-    if (link.href.includes('login.html') || link.href.includes('account.html')) {
-      if (loggedIn) {
-        link.textContent = 'Account';
-        link.href = 'account.html';
-      } else {
-        link.textContent = 'Login';
-        link.href = 'login.html';
-      }
-    }
-  });
 }
 
 const frame = document.getElementById("appFrame");

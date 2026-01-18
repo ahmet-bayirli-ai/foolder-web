@@ -1,6 +1,6 @@
 const defaultBackendUrl = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
   ? "http://localhost:3000"
-  : "https://api.foolder.tv";
+  : "https://api.foolder.com";
 const backendBaseUrl = window.FOOLDER_BACKEND_URL
   || localStorage.getItem("foolder_backend_url")
   || defaultBackendUrl;
