@@ -9,6 +9,13 @@ const backendBaseUrl = window.FOOLDER_BACKEND_URL
 const tokenKey = "foolder_token";
 const sessionKey = "foolder_session";
 
+// Check if user is logged in
+function isLoggedIn() {
+  const token = localStorage.getItem(tokenKey);
+  const session = localStorage.getItem(sessionKey);
+  return !!(token && session);
+}
+
 async function api(path, options = {}) {
   const token = localStorage.getItem(tokenKey);
   const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
@@ -50,6 +57,23 @@ async function updateNavigation() {
       });
     }
   }
+}
+
+// Update navigation links based on login state
+function updateNavigation(loggedIn) {
+  const navLinks = document.querySelectorAll('.nav a');
+  navLinks.forEach(link => {
+    // Find the login/account link
+    if (link.href.includes('login.html') || link.href.includes('account.html')) {
+      if (loggedIn) {
+        link.textContent = 'Account';
+        link.href = 'account.html';
+      } else {
+        link.textContent = 'Login';
+        link.href = 'login.html';
+      }
+    }
+  });
 }
 
 const frame = document.getElementById("appFrame");
