@@ -99,7 +99,7 @@ loginBtn.addEventListener("click", async () => {
       emailInput.value = "";
       passwordInput.value = "";
       
-      // Optionally save token for website use too
+      // Save token for website use too
       if (data.token) localStorage.setItem(tokenKey, data.token);
       if (data.session) localStorage.setItem(sessionKey, JSON.stringify(data.session));
       
@@ -110,8 +110,10 @@ loginBtn.addEventListener("click", async () => {
         body: JSON.stringify({ email, password })
       });
       
+      // Store token and session data
       if (data.token) localStorage.setItem(tokenKey, data.token);
       if (data.session) localStorage.setItem(sessionKey, JSON.stringify(data.session));
+      
       showStatus("Login successful!", "success");
       
       // Redirect after 1 second
@@ -139,8 +141,7 @@ signupBtn.addEventListener("click", async () => {
       return;
     }
     
-    // Basic email validation
-    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    if (!email.includes('@')) {
       showStatus("Please enter a valid email address", "error");
       return;
     }
@@ -166,7 +167,7 @@ signupBtn.addEventListener("click", async () => {
       newEmailInput.value = "";
       newPasswordInput.value = "";
       
-      // Optionally save token for website use too
+      // Save token for website use too
       if (data.token) localStorage.setItem(tokenKey, data.token);
       if (data.session) localStorage.setItem(sessionKey, JSON.stringify(data.session));
       
@@ -176,6 +177,8 @@ signupBtn.addEventListener("click", async () => {
         method: "POST",
         body: JSON.stringify({ email, password })
       });
+      
+      // Store token and session data
       if (reg?.token) {
         localStorage.setItem(tokenKey, reg.token);
         if (reg.session) localStorage.setItem(sessionKey, JSON.stringify(reg.session));

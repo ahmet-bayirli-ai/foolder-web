@@ -150,3 +150,7 @@ body {
   border-radius: 999px;
   font-size: 12px;
 }
+
+.hidden {
+  display: none !important;
+}

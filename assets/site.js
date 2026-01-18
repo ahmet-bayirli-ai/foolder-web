@@ -8,10 +8,6 @@ const backendBaseUrl = window.FOOLDER_BACKEND_URL
 
 const tokenKey = "foolder_token";
 const sessionKey = "foolder_session";
-const statusEl = document.getElementById("loginStatus");
-const loginBtn = document.getElementById("loginBtn");
-const registerBtn = document.getElementById("registerBtn");
-const logoutBtn = document.getElementById("logoutBtn");
 
 // Check if user is logged in
 function isLoggedIn() {
@@ -31,16 +27,35 @@ async function api(path, options = {}) {
   return data;
 }
 
-async function refreshAuthStatus() {
-  try {
-    const data = await api("/me");
-    if (statusEl) statusEl.textContent = `Logged in as ${data.user?.username || data.user?.email || "user"}`;
-    if (logoutBtn) logoutBtn.style.display = "inline-block";
-    updateNavigation(true);
-  } catch {
-    if (statusEl) statusEl.textContent = "Not logged in.";
-    if (logoutBtn) logoutBtn.style.display = "none";
-    updateNavigation(false);
+// Check authentication and update nav
+async function updateNavigation() {
+  const token = localStorage.getItem(tokenKey);
+  const accountLinks = document.querySelectorAll('.nav a[href="account.html"]');
+  
+  if (!token) {
+    // Not logged in - change Account link to Login
+    accountLinks.forEach(link => {
+      link.href = "login.html";
+      link.textContent = "Login";
+    });
+  } else {
+    // Verify token is still valid
+    try {
+      await api("/me");
+      // Token is valid - keep Account link
+      accountLinks.forEach(link => {
+        link.href = "account.html";
+        link.textContent = "Account";
+      });
+    } catch (e) {
+      // Token is invalid - clear and show Login
+      localStorage.removeItem(tokenKey);
+      localStorage.removeItem(sessionKey);
+      accountLinks.forEach(link => {
+        link.href = "login.html";
+        link.textContent = "Login";
+      });
+    }
   }
 }
 
@@ -74,56 +89,5 @@ document.querySelectorAll(".nav a").forEach(link => {
   }
 });
 
-if (loginBtn) {
-  loginBtn.addEventListener("click", async () => {
-    try {
-      const username = document.getElementById("loginUser").value.trim();
-      const password = document.getElementById("loginPass").value;
-      if (!username || !password) {
-        if (statusEl) statusEl.textContent = "Please enter username and password.";
-        return;
-      }
-      const data = await api("/auth/login", { method: "POST", body: JSON.stringify({ username, password }) });
-      if (data.token) localStorage.setItem(tokenKey, data.token);
-      await refreshAuthStatus();
-    } catch (e) {
-      if (statusEl) statusEl.textContent = `Login failed: ${e.message}`;
-    }
-  });
-}
-
-if (registerBtn) {
-  registerBtn.addEventListener("click", async () => {
-    try {
-      const username = document.getElementById("registerUser").value.trim();
-      const password = document.getElementById("registerPass").value;
-      if (!username || !password) {
-        if (statusEl) statusEl.textContent = "Please enter username and password.";
-        return;
-      }
-      await api("/auth/register", { method: "POST", body: JSON.stringify({ username, password }) });
-      if (statusEl) statusEl.textContent = "Account created. You can log in now.";
-    } catch (e) {
-      if (statusEl) statusEl.textContent = `Register failed: ${e.message}`;
-    }
-  });
-}
-
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", () => {
-    api("/auth/logout", { method: "POST" })
-      .catch(() => {})
-      .finally(() => {
-        localStorage.removeItem(tokenKey);
-        localStorage.removeItem(sessionKey);
-        window.location.href = 'login.html';
-      });
-  });
-}
-
-// Initialize auth check on page load
-if (isLoggedIn()) {
-  refreshAuthStatus();
-} else {
-  updateNavigation(false);
-}
+// Update navigation on page load
+updateNavigation();
