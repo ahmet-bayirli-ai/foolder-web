@@ -7,10 +7,18 @@ const backendBaseUrl = window.FOOLDER_BACKEND_URL
   || defaultBackendUrl;
 
 const tokenKey = "foolder_token";
+const sessionKey = "foolder_session";
 const statusEl = document.getElementById("loginStatus");
 const loginBtn = document.getElementById("loginBtn");
 const registerBtn = document.getElementById("registerBtn");
 const logoutBtn = document.getElementById("logoutBtn");
+
+// Check if user is logged in
+function isLoggedIn() {
+  const token = localStorage.getItem(tokenKey);
+  const session = localStorage.getItem(sessionKey);
+  return !!(token && session);
+}
 
 async function api(path, options = {}) {
   const token = localStorage.getItem(tokenKey);
@@ -26,12 +34,31 @@ async function api(path, options = {}) {
 async function refreshAuthStatus() {
   try {
     const data = await api("/me");
-    if (statusEl) statusEl.textContent = `Logged in as ${data.user?.username || "user"}`;
+    if (statusEl) statusEl.textContent = `Logged in as ${data.user?.username || data.user?.email || "user"}`;
     if (logoutBtn) logoutBtn.style.display = "inline-block";
+    updateNavigation(true);
   } catch {
     if (statusEl) statusEl.textContent = "Not logged in.";
     if (logoutBtn) logoutBtn.style.display = "none";
+    updateNavigation(false);
   }
+}
+
+// Update navigation links based on login state
+function updateNavigation(loggedIn) {
+  const navLinks = document.querySelectorAll('.nav a');
+  navLinks.forEach(link => {
+    // Find the login/account link
+    if (link.href.includes('login.html') || link.href.includes('account.html')) {
+      if (loggedIn) {
+        link.textContent = 'Account';
+        link.href = 'account.html';
+      } else {
+        link.textContent = 'Login';
+        link.href = 'login.html';
+      }
+    }
+  });
 }
 
 const frame = document.getElementById("appFrame");
@@ -88,9 +115,15 @@ if (logoutBtn) {
       .catch(() => {})
       .finally(() => {
         localStorage.removeItem(tokenKey);
-        refreshAuthStatus();
+        localStorage.removeItem(sessionKey);
+        window.location.href = 'login.html';
       });
   });
 }
 
-refreshAuthStatus();
+// Initialize auth check on page load
+if (isLoggedIn()) {
+  refreshAuthStatus();
+} else {
+  updateNavigation(false);
+}

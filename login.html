@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foolder — Sign In</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #0f0f10;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 450px;
+      padding: 60px 68px;
+      background: #17171a;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .logo {
+      font-size: 42px;
+      font-weight: 800;
+      color: #ff8a00;
+      margin-bottom: 28px;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+    h1 {
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 28px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    input {
+      width: 100%;
+      padding: 16px 20px;
+      background: #0f0f12;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    input:focus {
+      border-color: rgba(255, 138, 0, 0.7);
+      box-shadow: 0 0 0 2px rgba(255, 138, 0, 0.25);
+      background: #111116;
+    }
+    input::placeholder {
+      color: #9a9aa3;
+    }
+    .btn {
+      width: 100%;
+      padding: 16px;
+      background: #ff8a00;
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.05s ease-in-out;
+      margin-top: 24px;
+    }
+    .btn:hover {
+      background: #ffa033;
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
+    .btn:disabled {
+      background: #5b3b17;
+      color: #1c1207;
+      cursor: not-allowed;
+    }
+    .divider {
+      margin: 32px 0;
+      text-align: center;
+      position: relative;
+    }
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .divider span {
+      background: #17171a;
+      padding: 0 16px;
+      position: relative;
+      color: #9a9aa3;
+      font-size: 14px;
+    }
+    .toggle-link {
+      color: #fff;
+      text-decoration: none;
+      font-size: 16px;
+      display: inline-block;
+      margin-top: 16px;
+      cursor: pointer;
+    }
+    .toggle-link:hover {
+      color: #ff8a00;
+    }
+    .status {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .status.error {
+      background: rgba(255, 138, 0, 0.12);
+      color: #ffb357;
+    }
+    .status.success {
+      background: rgba(255, 138, 0, 0.18);
+      color: #ff8a00;
+    }
+    .status.info {
+      background: rgba(255, 255, 255, 0.08);
+      color: #c7c7cf;
+    }
+    .qr-notice {
+      background: rgba(255, 138, 0, 0.12);
+      border-left: 3px solid #ff8a00;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #ffb357;
+    }
+    .hidden {
+      display: none;
+    }
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: #9a9aa3;
+    }
+    .footer a {
+      color: #ffb357;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      color: #ff8a00;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">Foolder</div>
+    
+    <div id="qrNotice" class="qr-notice hidden">
+      Signing in from your TV app
+    </div>
+    
+    <div id="loginForm">
+      <h1>Sign In</h1>
+      <div class="form-group">
+        <input id="email" type="email" placeholder="Email" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
+      </div>
+      <button id="loginBtn" class="btn">Sign In</button>
+      
+      <div class="divider"><span>OR</span></div>
+      
+      <a class="toggle-link" id="toggleSignup">New to Foolder? Sign up now.</a>
+    </div>
+    
+    <div id="signupForm" class="hidden">
+      <h1>Sign Up</h1>
+      <div class="form-group">
+        <input id="newEmail" type="email" placeholder="Email" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <input id="newPassword" type="password" placeholder="Password" autocomplete="new-password" />
+      </div>
+      <button id="signupBtn" class="btn">Create Account</button>
+      
+      <div class="divider"><span>OR</span></div>
+      
+      <a class="toggle-link" id="toggleLogin">Already have an account? Sign in.</a>
+    </div>
+    
+    <div id="status" class="status hidden"></div>
+    <div style="margin-top: 20px; text-align: center;">
+      <a class="toggle-link" href="delete-account.html">Request account and data deletion</a>
+    </div>
+    <div class="footer">
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </div>
+
+  <script src="assets/login.js"></script>
+</body>
+</html>
