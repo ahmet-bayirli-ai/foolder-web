@@ -117,7 +117,7 @@ function renderAddons() {
   }
   
   addonsListEl.innerHTML = addons.map(addon => `
-    <div class="item">
+    <div class="item" data-addon-id="${escapeHtml(addon.id)}">
       <div class="item-info">
         <div class="item-name">
           ${escapeHtml(addon.name)}
@@ -128,11 +128,19 @@ function renderAddons() {
         <div class="item-url">${escapeHtml(addon.url)}</div>
       </div>
       <div class="item-actions">
-        <button class="btn btn-small btnSecondary" onclick="editAddon('${addon.id}')">Edit</button>
-        <button class="btn btn-small btn-danger" onclick="confirmDeleteAddon('${addon.id}', '${escapeHtml(addon.name)}')">Delete</button>
+        <button class="btn btn-small btnSecondary edit-addon-btn" data-id="${escapeHtml(addon.id)}">Edit</button>
+        <button class="btn btn-small btn-danger delete-addon-btn" data-id="${escapeHtml(addon.id)}" data-name="${escapeHtml(addon.name)}">Delete</button>
       </div>
     </div>
   `).join('');
+  
+  // Add event listeners
+  addonsListEl.querySelectorAll('.edit-addon-btn').forEach(btn => {
+    btn.addEventListener('click', () => editAddon(btn.dataset.id));
+  });
+  addonsListEl.querySelectorAll('.delete-addon-btn').forEach(btn => {
+    btn.addEventListener('click', () => confirmDeleteAddon(btn.dataset.id, btn.dataset.name));
+  });
 }
 
 // Load IPTV URLs
@@ -156,7 +164,7 @@ function renderIptvUrls() {
   }
   
   iptvListEl.innerHTML = iptvUrls.map(iptv => `
-    <div class="item">
+    <div class="item" data-iptv-id="${escapeHtml(iptv.id)}">
       <div class="item-info">
         <div class="item-name">
           ${escapeHtml(iptv.name)}
@@ -167,11 +175,19 @@ function renderIptvUrls() {
         <div class="item-url">${escapeHtml(iptv.url)}</div>
       </div>
       <div class="item-actions">
-        <button class="btn btn-small btnSecondary" onclick="editIptv('${iptv.id}')">Edit</button>
-        <button class="btn btn-small btn-danger" onclick="confirmDeleteIptv('${iptv.id}', '${escapeHtml(iptv.name)}')">Delete</button>
+        <button class="btn btn-small btnSecondary edit-iptv-btn" data-id="${escapeHtml(iptv.id)}">Edit</button>
+        <button class="btn btn-small btn-danger delete-iptv-btn" data-id="${escapeHtml(iptv.id)}" data-name="${escapeHtml(iptv.name)}">Delete</button>
       </div>
     </div>
   `).join('');
+  
+  // Add event listeners
+  iptvListEl.querySelectorAll('.edit-iptv-btn').forEach(btn => {
+    btn.addEventListener('click', () => editIptv(btn.dataset.id));
+  });
+  iptvListEl.querySelectorAll('.delete-iptv-btn').forEach(btn => {
+    btn.addEventListener('click', () => confirmDeleteIptv(btn.dataset.id, btn.dataset.name));
+  });
 }
 
 // Utility function
@@ -274,7 +290,7 @@ addAddonBtn.addEventListener("click", () => {
   showModal(addonModal);
 });
 
-window.editAddon = (id) => {
+function editAddon(id) {
   const addon = addons.find(a => a.id === id);
   if (!addon) return;
   
@@ -285,7 +301,7 @@ window.editAddon = (id) => {
   document.getElementById("addonEnabled").checked = addon.enabled !== false;
   document.getElementById("addonStatus").classList.add("hidden");
   showModal(addonModal);
-};
+}
 
 document.getElementById("cancelAddonBtn").addEventListener("click", () => {
   hideModal(addonModal);
@@ -337,7 +353,7 @@ addIptvBtn.addEventListener("click", () => {
   showModal(iptvModal);
 });
 
-window.editIptv = (id) => {
+function editIptv(id) {
   const iptv = iptvUrls.find(i => i.id === id);
   if (!iptv) return;
   
@@ -348,7 +364,7 @@ window.editIptv = (id) => {
   document.getElementById("iptvEnabled").checked = iptv.enabled !== false;
   document.getElementById("iptvStatus").classList.add("hidden");
   showModal(iptvModal);
-};
+}
 
 document.getElementById("cancelIptvBtn").addEventListener("click", () => {
   hideModal(iptvModal);
@@ -390,7 +406,7 @@ document.getElementById("saveIptvBtn").addEventListener("click", async () => {
 });
 
 // Confirm Delete Modal
-window.confirmDeleteAddon = (id, name) => {
+function confirmDeleteAddon(id, name) {
   document.getElementById("confirmMessage").textContent = `Are you sure you want to delete the addon "${name}"?`;
   deleteCallback = async () => {
     try {
@@ -402,9 +418,9 @@ window.confirmDeleteAddon = (id, name) => {
     }
   };
   showModal(confirmModal);
-};
+}
 
-window.confirmDeleteIptv = (id, name) => {
+function confirmDeleteIptv(id, name) {
   document.getElementById("confirmMessage").textContent = `Are you sure you want to delete the IPTV URL "${name}"?`;
   deleteCallback = async () => {
     try {
@@ -416,7 +432,7 @@ window.confirmDeleteIptv = (id, name) => {
     }
   };
   showModal(confirmModal);
-};
+}
 
 document.getElementById("confirmDeleteBtn").addEventListener("click", () => {
   if (deleteCallback) deleteCallback();
