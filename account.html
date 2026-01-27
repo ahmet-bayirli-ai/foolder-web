@@ -445,6 +445,82 @@
       padding: 48px;
       color: #aaa;
     }
+    
+    /* Mobile responsive styles */
+    @media (max-width: 768px) {
+      .settings-container {
+        padding: 16px 8px;
+      }
+      
+      .page-header {
+        margin-bottom: 20px;
+        padding: 0 8px;
+      }
+      
+      .page-title {
+        font-size: 24px;
+      }
+      
+      .page-subtitle {
+        font-size: 13px;
+      }
+      
+      .section {
+        padding: 16px 12px;
+        margin-bottom: 12px;
+        border-radius: 8px;
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      
+      .section-title {
+        font-size: 18px;
+      }
+      
+      .item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px;
+        gap: 12px;
+      }
+      
+      .item-icon {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .item-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      
+      .profile-info {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      
+      .modal-content {
+        width: 95%;
+        max-width: none;
+      }
+      
+      .modal-body {
+        padding: 16px;
+      }
+      
+      .modal-footer {
+        flex-direction: column-reverse;
+      }
+      
+      .modal-footer .btn {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -623,15 +699,8 @@
       </div>
     </div>
   </div>
-      <p id="confirmMessage">Are you sure you want to delete this item?</p>
-      <div class="modal-actions">
-        <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-        <button class="btnSecondary btn" id="cancelDeleteBtn">Cancel</button>
-      </div>
-    </div>
-  </div>
 
-  <script src="assets/site.js?v=8"></script>
-  <script src="assets/account.js?v=8"></script>
+  <script src="assets/site.js?v=9"></script>
+  <script src="assets/account.js?v=9"></script>
 </body>
 </html>
