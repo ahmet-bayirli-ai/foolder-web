@@ -293,19 +293,17 @@ function renderAddons() {
   
   addonsListEl.innerHTML = addons.map(addon => `
     <div class="item" data-addon-id="${escapeHtml(addon.id)}">
-      <div style="display: flex; gap: 12px; align-items: center; flex: 1; min-width: 0;">
-        <img src="${addon.logo || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Crect fill=\'%23333\' width=\'40\' height=\'40\'/%3E%3Ctext x=\'20\' y=\'24\' text-anchor=\'middle\' fill=\'%23999\' font-family=\'Arial\' font-size=\'10\'%3E%3F%3C/text%3E%3C/svg%3E'}" 
-             alt="${escapeHtml(addon.name)}" 
-             style="width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" />
-        <div class="item-info">
-          <div class="item-name">
-            ${escapeHtml(addon.name)}
-            <span class="status-badge ${addon.enabled ? 'status-enabled' : 'status-disabled'}">
-              ${addon.enabled ? 'Enabled' : 'Disabled'}
-            </span>
-          </div>
-          <div class="item-url">${escapeHtml(addon.url)}</div>
+      <img src="${addon.logo || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect fill=\'%23333\' width=\'48\' height=\'48\' rx=\'8\'/%3E%3Ctext x=\'24\' y=\'28\' text-anchor=\'middle\' fill=\'%23999\' font-family=\'Arial\' font-size=\'12\'%3E%3F%3C/text%3E%3C/svg%3E'}" 
+           alt="${escapeHtml(addon.name)}" 
+           class="item-icon" />
+      <div class="item-info">
+        <div class="item-name">
+          ${escapeHtml(addon.name)}
+          <span class="status-badge ${addon.enabled ? 'status-enabled' : 'status-disabled'}">
+            ${addon.enabled ? 'Enabled' : 'Disabled'}
+          </span>
         </div>
+        <div class="item-url">${escapeHtml(addon.url)}</div>
       </div>
       <div class="item-actions">
         <button class="btn btn-small btnSecondary edit-addon-btn" data-id="${escapeHtml(addon.id)}">Edit</button>

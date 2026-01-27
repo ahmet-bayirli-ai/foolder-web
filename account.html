@@ -6,122 +6,217 @@
   <title>Foolder — Account Settings</title>
   <link rel="stylesheet" href="assets/styles.css" />
   <style>
-    .section {
-      margin-bottom: 24px;
+    body {
+      background: #0f0f0f;
     }
-    .section-title {
-      font-size: 18px;
+    
+    /* Container with max-width like YouTube settings */
+    .settings-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    
+    .page-header {
+      margin-bottom: 32px;
+    }
+    
+    .page-title {
+      font-size: 32px;
       font-weight: 600;
-      margin-bottom: 12px;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      color: #fff;
+      margin: 0 0 8px 0;
     }
-    .item {
+    
+    .page-subtitle {
+      font-size: 14px;
+      color: #aaa;
+    }
+    
+    .section {
       background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 8px;
-      padding: 12px 16px;
-      margin-bottom: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    
+    .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      margin: 0;
+    }
+    
+    .item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
       transition: all 0.2s ease;
     }
+    
     .item:hover {
-      background: rgba(255, 255, 255, 0.04);
-      border-color: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.12);
     }
+    
+    .item-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
     .item-info {
       flex: 1;
       min-width: 0;
-      padding-right: 16px;
     }
+    
     .item-name {
       font-weight: 500;
+      font-size: 15px;
       margin-bottom: 4px;
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 14px;
+      color: #fff;
     }
+    
     .item-url {
-      font-size: 12px;
-      color: var(--muted);
+      font-size: 13px;
+      color: #aaa;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      max-width: 100%;
     }
+    
     .item-actions {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       flex-shrink: 0;
     }
+    
+    .btn {
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
     .btn-small {
       padding: 6px 12px;
-      font-size: 12px;
-      border-radius: 6px;
-    }
-    .btn-danger {
-      background: rgba(244, 67, 54, 0.15);
-      color: #e57373;
-      border: 1px solid rgba(244, 67, 54, 0.3);
-    }
-    .btn-danger:hover {
-      background: rgba(244, 67, 54, 0.25);
-      border-color: rgba(244, 67, 54, 0.5);
-    }
-    .empty-state {
-      text-align: center;
-      padding: 24px;
-      color: var(--muted);
       font-size: 13px;
     }
+    
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+    
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    
+    .btnSecondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    
+    .btnSecondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+    
+    .btn-danger {
+      background: rgba(244, 67, 54, 0.15);
+      color: #ef5350;
+      border: 1px solid rgba(244, 67, 54, 0.3);
+    }
+    
+    .btn-danger:hover {
+      background: rgba(244, 67, 54, 0.25);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: #aaa;
+      font-size: 14px;
+    }
+    
     .profile-info {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
-    .profile-info > div {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+    
+    .profile-info-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 8px;
-      padding: 12px;
+      padding: 16px;
     }
+    
     .profile-label {
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 4px;
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 6px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-    }
-    .profile-value {
-      font-size: 14px;
       font-weight: 500;
     }
+    
+    .profile-value {
+      font-size: 15px;
+      font-weight: 500;
+      color: #fff;
+    }
+    
     .status-badge {
       display: inline-flex;
       align-items: center;
-      padding: 2px 8px;
+      padding: 3px 8px;
       border-radius: 4px;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.3px;
     }
+    
     .status-enabled {
       background: rgba(76, 175, 80, 0.15);
-      color: #81c784;
+      color: #66bb6a;
       border: 1px solid rgba(76, 175, 80, 0.3);
     }
+    
     .status-disabled {
       background: rgba(158, 158, 158, 0.15);
       color: #9e9e9e;
       border: 1px solid rgba(158, 158, 158, 0.3);
     }
+    
+    /* Modal redesign */
     .modal {
       display: none;
       position: fixed;
@@ -133,42 +228,162 @@
       align-items: center;
       justify-content: center;
       z-index: 1000;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(8px);
+      padding: 20px;
     }
+    
     .modal.active {
       display: flex;
     }
+    
     .modal-content {
-      background: var(--panel);
+      background: #1a1a1a;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 12px;
-      padding: 24px;
-      max-width: 500px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      padding: 0;
+      max-width: 540px;
+      width: 100%;
+      max-height: 85vh;
+      overflow: hidden;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
     }
+    
+    .modal-header {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
     .modal-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
+      color: #fff;
+      margin: 0;
+    }
+    
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    
+    .form-group {
       margin-bottom: 20px;
     }
-    .modal-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 20px;
+    
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 8px;
     }
+    
+    .form-hint {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 6px;
+    }
+    
+    .input {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    
+    .input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    .input::placeholder {
+      color: #666;
+    }
+    
+    .preview-card {
+      display: flex;
+      gap: 14px;
+      align-items: start;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .preview-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    
+    .preview-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .preview-name {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+    
+    .preview-description {
+      font-size: 13px;
+      color: #aaa;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    
+    .preview-version {
+      font-size: 12px;
+      color: #888;
+    }
+    
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+    }
+    
+    .toggle-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+    }
+    
     .toggle-switch {
       position: relative;
       display: inline-block;
-      width: 44px;
-      height: 24px;
+      width: 48px;
+      height: 26px;
     }
+    
     .toggle-switch input {
       opacity: 0;
       width: 0;
       height: 0;
     }
+    
     .toggle-slider {
       position: absolute;
       cursor: pointer;
@@ -176,59 +391,59 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.12);
       transition: 0.3s;
-      border-radius: 24px;
+      border-radius: 26px;
     }
+    
     .toggle-slider:before {
       position: absolute;
       content: "";
-      height: 18px;
-      width: 18px;
+      height: 20px;
+      width: 20px;
       left: 3px;
       bottom: 3px;
       background-color: white;
       transition: 0.3s;
       border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
+    
     input:checked + .toggle-slider {
       background-color: var(--accent);
     }
+    
     input:checked + .toggle-slider:before {
-      transform: translateX(20px);
+      transform: translateX(22px);
     }
-    .loading {
-      text-align: center;
-      padding: 32px;
-      color: var(--muted);
-    }
-    .form-group {
-      margin-bottom: 16px;
-    }
+    
     .status {
-      margin-top: 16px;
-      padding: 10px 12px;
-      border-radius: 6px;
+      padding: 12px 16px;
+      border-radius: 8px;
       font-size: 13px;
+      margin-top: 16px;
     }
+    
     .status.error {
-      background: rgba(244, 67, 54, 0.15);
-      color: #e57373;
+      background: rgba(244, 67, 54, 0.12);
+      color: #ef5350;
       border: 1px solid rgba(244, 67, 54, 0.3);
     }
+    
     .status.success {
-      background: rgba(76, 175, 80, 0.15);
-      color: #81c784;
+      background: rgba(76, 175, 80, 0.12);
+      color: #66bb6a;
       border: 1px solid rgba(76, 175, 80, 0.3);
     }
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
+    
+    .hidden {
+      display: none !important;
     }
-    .card {
-      padding: 20px;
+    
+    .loading {
+      text-align: center;
+      padding: 48px;
+      color: #aaa;
     }
   </style>
 </head>
@@ -244,45 +459,54 @@
   </header>
 
   <main class="main">
-    <div id="loadingState" class="card loading">
-      Loading account information...
-    </div>
-
-    <div id="mainContent" class="hidden">
-      <!-- Profile Section -->
-      <div class="card section">
-        <h2 class="section-title">Profile</h2>
-        <div class="profile-info">
-          <div>
-            <div class="profile-label">Email</div>
-            <div class="profile-value" id="userEmail">-</div>
-          </div>
-          <div>
-            <div class="profile-label">Account Created</div>
-            <div class="profile-value" id="accountCreated">-</div>
-          </div>
-        </div>
-        <div class="divider"></div>
-        <button class="btn btn-small" id="changePasswordBtn">Change Password</button>
-        <button class="btnSecondary btn btn-small" id="logoutBtn" style="margin-left: 12px;">Logout</button>
+    <div class="settings-container">
+      <div class="page-header">
+        <h1 class="page-title">Account Settings</h1>
+        <p class="page-subtitle">Manage your account, addons, and IPTV sources</p>
+      </div>
+      
+      <div id="loadingState" class="loading">
+        Loading account information...
       </div>
 
-      <!-- Addons Section -->
-      <div class="card section">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <h2 class="section-title" style="margin: 0;">Addons</h2>
-          <button class="btn btn-small" id="addAddonBtn">Add Addon</button>
+      <div id="contentState" class="hidden">
+        <!-- Profile Section -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">Profile</h2>
+          </div>
+          <div class="profile-info">
+            <div class="profile-info-item">
+              <div class="profile-label">Email</div>
+              <div class="profile-value" id="userEmail">-</div>
+            </div>
+            <div class="profile-info-item">
+              <div class="profile-label">Account Created</div>
+              <div class="profile-value" id="accountCreated">-</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <button class="btn btn-primary btn-small" id="changePasswordBtn">Change Password</button>
+            <button class="btnSecondary btn btn-small" id="logoutBtn">Logout</button>
         </div>
-        <div id="addonsList"></div>
-      </div>
 
-      <!-- IPTV Section -->
-      <div class="card section">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <h2 class="section-title" style="margin: 0;">IPTV URLs</h2>
-          <button class="btn btn-small" id="addIptvBtn">Add IPTV URL</button>
+        <!-- Addons Section -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">Addons</h2>
+            <button class="btn btn-primary btn-small" id="addAddonBtn">Add Addon</button>
+          </div>
+          <div id="addonsList"></div>
         </div>
-        <div id="iptvList"></div>
+
+        <!-- IPTV Section -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">IPTV URLs</h2>
+            <button class="btn btn-primary btn-small" id="addIptvBtn">Add IPTV URL</button>
+          </div>
+          <div id="iptvList"></div>
+        </div>
       </div>
     </div>
   </main>
@@ -290,20 +514,27 @@
   <!-- Change Password Modal -->
   <div id="passwordModal" class="modal">
     <div class="modal-content">
-      <h3 class="modal-title">Change Password</h3>
-      <div class="form-group">
-        <input id="currentPassword" type="password" class="input" placeholder="Current Password" />
+      <div class="modal-header">
+        <h3 class="modal-title">Change Password</h3>
       </div>
-      <div class="form-group">
-        <input id="newPassword" type="password" class="input" placeholder="New Password" />
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Current Password</label>
+          <input id="currentPassword" type="password" class="input" placeholder="Enter current password" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <input id="newPassword" type="password" class="input" placeholder="Enter new password" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <input id="confirmPassword" type="password" class="input" placeholder="Confirm new password" />
+        </div>
+        <div id="passwordStatus" class="status hidden"></div>
       </div>
-      <div class="form-group">
-        <input id="confirmPassword" type="password" class="input" placeholder="Confirm New Password" />
-      </div>
-      <div id="passwordStatus" class="status hidden"></div>
-      <div class="modal-actions">
-        <button class="btn" id="savePasswordBtn">Save Password</button>
+      <div class="modal-footer">
         <button class="btnSecondary btn" id="cancelPasswordBtn">Cancel</button>
+        <button class="btn btn-primary" id="savePasswordBtn">Save Password</button>
       </div>
     </div>
   </div>
@@ -311,35 +542,37 @@
   <!-- Addon Modal -->
   <div id="addonModal" class="modal">
     <div class="modal-content">
-      <h3 class="modal-title" id="addonModalTitle">Add Addon</h3>
-      <div class="form-group">
-        <label style="font-size: 13px; color: var(--muted); margin-bottom: 6px; display: block;">Addon Manifest URL</label>
-        <input id="addonUrl" type="text" class="input" placeholder="https://example.com/manifest.json" />
-        <div style="font-size: 11px; color: var(--muted); margin-top: 6px;">Enter the manifest URL to automatically load addon details</div>
+      <div class="modal-header">
+        <h3 class="modal-title" id="addonModalTitle">Add Addon</h3>
       </div>
-      <div id="addonPreview" class="addon-preview" style="display: none;">
-        <div style="display: flex; gap: 12px; align-items: start; padding: 12px; background: rgba(255, 255, 255, 0.02); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.06);">
-          <img id="addonPreviewIcon" src="" alt="" style="width: 48px; height: 48px; border-radius: 8px; object-fit: cover;" />
-          <div style="flex: 1; min-width: 0;">
-            <div id="addonPreviewName" style="font-weight: 600; font-size: 14px; margin-bottom: 4px;"></div>
-            <div id="addonPreviewDescription" style="font-size: 12px; color: var(--muted); line-height: 1.4;"></div>
-            <div id="addonPreviewVersion" style="font-size: 11px; color: var(--muted); margin-top: 4px;"></div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Addon Manifest URL</label>
+          <input id="addonUrl" type="text" class="input" placeholder="https://example.com/manifest.json" />
+          <div class="form-hint">Enter the manifest URL to automatically load addon details</div>
+        </div>
+        <div id="addonPreview" class="addon-preview" style="display: none; margin-bottom: 20px;">
+          <div class="preview-card">
+            <img id="addonPreviewIcon" src="" alt="" class="preview-icon" />
+            <div class="preview-info">
+              <div id="addonPreviewName" class="preview-name"></div>
+              <div id="addonPreviewDescription" class="preview-description"></div>
+              <div id="addonPreviewVersion" class="preview-version"></div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label style="display: flex; align-items: center; justify-content: space-between;">
-          <span style="font-size: 13px; font-weight: 500;">Enable on load</span>
+        <div class="toggle-row">
+          <span class="toggle-label">Enable on load</span>
           <label class="toggle-switch">
             <input type="checkbox" id="addonEnabled" checked />
             <span class="toggle-slider"></span>
           </label>
-        </label>
+        </div>
+        <div id="addonStatus" class="status hidden"></div>
       </div>
-      <div id="addonStatus" class="status hidden"></div>
-      <div class="modal-actions">
-        <button class="btn" id="saveAddonBtn" disabled>Save Addon</button>
+      <div class="modal-footer">
         <button class="btnSecondary btn" id="cancelAddonBtn">Cancel</button>
+        <button class="btn btn-primary" id="saveAddonBtn" disabled>Save Addon</button>
       </div>
     </div>
   </div>
@@ -347,26 +580,30 @@
   <!-- IPTV Modal -->
   <div id="iptvModal" class="modal">
     <div class="modal-content">
-      <h3 class="modal-title" id="iptvModalTitle">Add IPTV URL</h3>
-      <div class="form-group">
-        <input id="iptvName" type="text" class="input" placeholder="IPTV Name" />
+      <div class="modal-header">
+        <h3 class="modal-title" id="iptvModalTitle">Add IPTV URL</h3>
       </div>
-      <div class="form-group">
-        <input id="iptvUrl" type="text" class="input" placeholder="M3U/Playlist URL" />
-      </div>
-      <div class="form-group">
-        <label style="display: flex; align-items: center; gap: 12px;">
-          <span>Enabled</span>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">IPTV Name</label>
+          <input id="iptvName" type="text" class="input" placeholder="e.g., My Playlist" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">M3U/Playlist URL</label>
+          <input id="iptvUrl" type="text" class="input" placeholder="https://example.com/playlist.m3u" />
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Enable this playlist</span>
           <label class="toggle-switch">
             <input type="checkbox" id="iptvEnabled" checked />
             <span class="toggle-slider"></span>
           </label>
-        </label>
+        </div>
+        <div id="iptvStatus" class="status hidden"></div>
       </div>
-      <div id="iptvStatus" class="status hidden"></div>
-      <div class="modal-actions">
-        <button class="btn" id="saveIptvBtn">Save IPTV URL</button>
+      <div class="modal-footer">
         <button class="btnSecondary btn" id="cancelIptvBtn">Cancel</button>
+        <button class="btn btn-primary" id="saveIptvBtn">Save IPTV URL</button>
       </div>
     </div>
   </div>
@@ -374,7 +611,18 @@
   <!-- Confirm Delete Modal -->
   <div id="confirmModal" class="modal">
     <div class="modal-content">
-      <h3 class="modal-title">Confirm Delete</h3>
+      <div class="modal-header">
+        <h3 class="modal-title">Confirm Delete</h3>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage" style="color: #aaa; font-size: 14px; margin: 0;">Are you sure you want to delete this item?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btnSecondary btn" id="cancelDeleteBtn">Cancel</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+      </div>
+    </div>
+  </div>
       <p id="confirmMessage">Are you sure you want to delete this item?</p>
       <div class="modal-actions">
         <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
@@ -383,7 +631,7 @@
     </div>
   </div>
 
-  <script src="assets/site.js?v=5"></script>
-  <script src="assets/account.js?v=5"></script>
+  <script src="assets/site.js?v=6"></script>
+  <script src="assets/account.js?v=6"></script>
 </body>
 </html>
