@@ -58,9 +58,11 @@ async function api(path, options = {}) {
   const token = localStorage.getItem(tokenKey);
   const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
   if (token) headers.Authorization = `Bearer ${token}`;
+  
   const res = await fetch(`${backendBaseUrl}${path}`, { ...options, headers });
   const text = await res.text();
   const data = text ? JSON.parse(text) : {};
+  
   if (!res.ok) {
     if (res.status === 401) {
       // Try to refresh token
@@ -68,8 +70,13 @@ async function api(path, options = {}) {
       if (refreshed) {
         // Retry the request with new token
         const newToken = localStorage.getItem(tokenKey);
-        headers.Authorization = `Bearer ${newToken}`;
-        const retryRes = await fetch(`${backendBaseUrl}${path}`, { ...options, headers });
+        const retryHeaders = { "Content-Type": "application/json", ...(options.headers || {}) };
+        retryHeaders.Authorization = `Bearer ${newToken}`;
+        
+        // Create retry options with updated headers
+        const retryOptions = { ...options, headers: retryHeaders };
+        
+        const retryRes = await fetch(`${backendBaseUrl}${path}`, retryOptions);
         const retryText = await retryRes.text();
         const retryData = retryText ? JSON.parse(retryText) : {};
         if (retryRes.ok) return retryData;
@@ -130,28 +137,38 @@ async function init() {
     
     if (qrCode) {
         loadingState.textContent = "Linking TV...";
+        console.log("QR code detected:", qrCode);
         
         // Wait for the next animation frame so the "Linking TV..." text is rendered before the network request
         await new Promise(resolve => requestAnimationFrame(resolve));
         
+        const session = getStoredSession();
+        console.log("Stored session:", session ? "Found" : "Not found");
+        
         try {
-            await api(`/auth/qr-session/${qrCode}/complete-session`, {
+            const result = await api(`/auth/qr-session/${qrCode}/complete-session`, {
                  method: "POST",
-                 body: JSON.stringify({ session: getStoredSession() })
+                 body: JSON.stringify({ session: session })
             });
+            console.log("QR session completed:", result);
             alert("TV Linked Successfully!");
             // Remove query param without reload
             window.history.replaceState({}, document.title, "account.html");
         } catch (e) {
-            console.error(e);
+            console.error("QR session error:", e);
             alert("Failed to link TV: " + e.message);
+            // Continue to load account page even if linking fails
         }
     }
 
+    console.log("Loading user info...");
     await loadUserInfo();
+    console.log("Loading addons...");
     await loadAddons();
+    console.log("Loading IPTV URLs...");
     await loadIptvUrls();
     
+    console.log("Account page loaded successfully");
     loadingState.classList.add("hidden");
     mainContent.classList.remove("hidden");
   } catch (e) {
