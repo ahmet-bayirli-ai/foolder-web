@@ -228,11 +228,29 @@ async function loadAddons() {
       // Fetch manifests and update in parallel
       await Promise.all(needsRefresh.map(async (addon) => {
         try {
-          const response = await fetch(addon.url);
-          if (!response.ok) return;
+          // Try to fetch manifest - append /manifest.json if not already there
+          let manifestUrl = addon.url;
+          if (!manifestUrl.endsWith('/manifest.json') && !manifestUrl.includes('manifest.json')) {
+            manifestUrl = manifestUrl.endsWith('/') ? `${manifestUrl}manifest.json` : `${manifestUrl}/manifest.json`;
+          }
+          
+          const response = await fetch(manifestUrl);
+          if (!response.ok) {
+            console.log(`Skipping ${addon.url} - manifest not found`);
+            return;
+          }
+          
+          const contentType = response.headers.get('content-type');
+          if (!contentType || !contentType.includes('application/json')) {
+            console.log(`Skipping ${addon.url} - not a JSON response`);
+            return;
+          }
           
           const manifest = await response.json();
-          if (!manifest.name) return;
+          if (!manifest.name) {
+            console.log(`Skipping ${addon.url} - manifest missing name field`);
+            return;
+          }
           
           // Update addon with manifest data
           await api(`/user/addons/${encodeURIComponent(addon.id)}`, {
@@ -246,8 +264,10 @@ async function loadAddons() {
               enabled: addon.enabled !== false
             })
           });
+          
+          console.log(`Refreshed metadata for ${manifest.name}`);
         } catch (e) {
-          console.error(`Failed to refresh metadata for ${addon.url}:`, e);
+          console.log(`Skipping ${addon.url} - ${e.message}`);
         }
       }));
       
