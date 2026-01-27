@@ -218,6 +218,44 @@ async function loadAddons() {
   try {
     const data = await api("/user/addons");
     addons = data.addons || data || [];
+    
+    // Check for addons that need metadata refresh (migrated from old format)
+    const needsRefresh = addons.filter(addon => !addon.logo || addon.name === addon.url);
+    
+    if (needsRefresh.length > 0) {
+      console.log(`Refreshing metadata for ${needsRefresh.length} addon(s)...`);
+      
+      // Fetch manifests and update in parallel
+      await Promise.all(needsRefresh.map(async (addon) => {
+        try {
+          const response = await fetch(addon.url);
+          if (!response.ok) return;
+          
+          const manifest = await response.json();
+          if (!manifest.name) return;
+          
+          // Update addon with manifest data
+          await api(`/user/addons/${encodeURIComponent(addon.id)}`, {
+            method: "PUT",
+            body: JSON.stringify({
+              url: addon.url,
+              name: manifest.name,
+              description: manifest.description || null,
+              logo: manifest.logo || null,
+              version: manifest.version || null,
+              enabled: addon.enabled !== false
+            })
+          });
+        } catch (e) {
+          console.error(`Failed to refresh metadata for ${addon.url}:`, e);
+        }
+      }));
+      
+      // Reload addons after refresh
+      const refreshedData = await api("/user/addons");
+      addons = refreshedData.addons || refreshedData || [];
+    }
+    
     renderAddons();
   } catch (e) {
     console.error("Failed to load addons:", e);
