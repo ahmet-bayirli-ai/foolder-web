@@ -9,13 +9,51 @@ const backendBaseUrl = window.FOOLDER_BACKEND_URL
 const tokenKey = "foolder_token";
 const sessionKey = "foolder_session";
 
+// Refresh token helper
+async function refreshAccessToken() {
+  try {
+    const sessionData = localStorage.getItem(sessionKey);
+    if (!sessionData) return false;
+    
+    const session = JSON.parse(sessionData);
+    if (!session.refresh_token) return false;
+    
+    const res = await fetch(`${backendBaseUrl}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: session.refresh_token })
+    });
+    
+    if (!res.ok) return false;
+    
+    const data = await res.json();
+    if (data.token && data.session) {
+      localStorage.setItem(tokenKey, data.token);
+      localStorage.setItem(sessionKey, JSON.stringify(data.session));
+      return true;
+    }
+    return false;
+  } catch (e) {
+    console.error("Token refresh failed:", e);
+    return false;
+  }
+}
+
 // Check authentication on page load
 const token = localStorage.getItem(tokenKey);
 if (!token) {
-  window.location.href = "login.html?redirect=account.html";
+  // Preserve QR code parameter when redirecting to login
+  const urlParams = new URLSearchParams(window.location.search);
+  const qrCode = urlParams.get('qr') || urlParams.get('code');
+  if (qrCode) {
+    window.location.href = `login.html?qr=${qrCode}`;
+  } else {
+    window.location.href = "login.html?redirect=account.html";
+  }
+  throw new Error('Redirecting to login'); // Stop execution
 }
 
-// API Helper
+// API Helper with automatic token refresh
 async function api(path, options = {}) {
   const token = localStorage.getItem(tokenKey);
   const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
@@ -25,6 +63,18 @@ async function api(path, options = {}) {
   const data = text ? JSON.parse(text) : {};
   if (!res.ok) {
     if (res.status === 401) {
+      // Try to refresh token
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        // Retry the request with new token
+        const newToken = localStorage.getItem(tokenKey);
+        headers.Authorization = `Bearer ${newToken}`;
+        const retryRes = await fetch(`${backendBaseUrl}${path}`, { ...options, headers });
+        const retryText = await retryRes.text();
+        const retryData = retryText ? JSON.parse(retryText) : {};
+        if (retryRes.ok) return retryData;
+      }
+      // Refresh failed or retry failed - logout
       localStorage.removeItem(tokenKey);
       localStorage.removeItem(sessionKey);
       window.location.href = "login.html?redirect=account.html";

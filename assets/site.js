@@ -16,6 +16,36 @@ function isLoggedIn() {
   return !!(token && session);
 }
 
+// Refresh token helper
+async function refreshAccessToken() {
+  try {
+    const sessionData = localStorage.getItem(sessionKey);
+    if (!sessionData) return false;
+    
+    const session = JSON.parse(sessionData);
+    if (!session.refresh_token) return false;
+    
+    const res = await fetch(`${backendBaseUrl}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: session.refresh_token })
+    });
+    
+    if (!res.ok) return false;
+    
+    const data = await res.json();
+    if (data.token && data.session) {
+      localStorage.setItem(tokenKey, data.token);
+      localStorage.setItem(sessionKey, JSON.stringify(data.session));
+      return true;
+    }
+    return false;
+  } catch (e) {
+    console.error("Token refresh failed:", e);
+    return false;
+  }
+}
+
 async function api(path, options = {}) {
   const token = localStorage.getItem(tokenKey);
   const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
@@ -23,7 +53,25 @@ async function api(path, options = {}) {
   const res = await fetch(`${backendBaseUrl}${path}`, { ...options, headers });
   const text = await res.text();
   const data = text ? JSON.parse(text) : {};
-  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  if (!res.ok) {
+    if (res.status === 401) {
+      // Try to refresh token
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        // Retry the request with new token
+        const newToken = localStorage.getItem(tokenKey);
+        headers.Authorization = `Bearer ${newToken}`;
+        const retryRes = await fetch(`${backendBaseUrl}${path}`, { ...options, headers });
+        const retryText = await retryRes.text();
+        const retryData = retryText ? JSON.parse(retryText) : {};
+        if (retryRes.ok) return retryData;
+      }
+      // Refresh failed - clear tokens
+      localStorage.removeItem(tokenKey);
+      localStorage.removeItem(sessionKey);
+    }
+    throw new Error(data.error || `HTTP ${res.status}`);
+  }
   return data;
 }
 
@@ -48,9 +96,7 @@ async function updateNavigation() {
         link.textContent = "Account";
       });
     } catch (e) {
-      // Token is invalid - clear and show Login
-      localStorage.removeItem(tokenKey);
-      localStorage.removeItem(sessionKey);
+      // Token is invalid even after refresh attempt - show Login
       accountLinks.forEach(link => {
         link.href = "login.html";
         link.textContent = "Login";

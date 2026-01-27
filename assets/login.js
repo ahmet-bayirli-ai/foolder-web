@@ -93,15 +93,16 @@ loginBtn.addEventListener("click", async () => {
         body: JSON.stringify({ email, password, isRegister: false })
       });
       
-      showStatus("Login successful! Return to your TV.", "success");
-      
-      // Clear inputs
-      emailInput.value = "";
-      passwordInput.value = "";
-      
       // Save token for website use too
       if (data.token) localStorage.setItem(tokenKey, data.token);
       if (data.session) localStorage.setItem(sessionKey, JSON.stringify(data.session));
+      
+      showStatus("Linking your TV...", "success");
+      
+      // Redirect to account page with QR parameter to trigger complete-session
+      setTimeout(() => {
+        window.location.href = `account.html?qr=${qrSessionId}`;
+      }, 500);
       
     } else {
       // Normal website login
@@ -161,15 +162,16 @@ signupBtn.addEventListener("click", async () => {
         body: JSON.stringify({ email, password, isRegister: true })
       });
       
-      showStatus("Account created! Return to your TV.", "success");
-      
-      // Clear inputs
-      newEmailInput.value = "";
-      newPasswordInput.value = "";
-      
       // Save token for website use too
       if (data.token) localStorage.setItem(tokenKey, data.token);
       if (data.session) localStorage.setItem(sessionKey, JSON.stringify(data.session));
+      
+      showStatus("Account created! Linking your TV...", "success");
+      
+      // Redirect to account page with QR parameter to trigger complete-session
+      setTimeout(() => {
+        window.location.href = `account.html?qr=${qrSessionId}`;
+      }, 500);
       
     } else {
       // Normal website registration
