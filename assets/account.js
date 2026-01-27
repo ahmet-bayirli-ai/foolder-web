@@ -678,7 +678,8 @@ function confirmDeleteAddon(id, name) {
   document.getElementById("confirmMessage").textContent = `Are you sure you want to delete the addon "${name}"?`;
   deleteCallback = async () => {
     try {
-      await api(`/user/addons/${id}`, { method: "DELETE" });
+      // URL encode the addon ID since it may contain special characters (URLs)
+      await api(`/user/addons/${encodeURIComponent(id)}`, { method: "DELETE" });
       await loadAddons();
       hideModal(confirmModal);
     } catch (e) {
